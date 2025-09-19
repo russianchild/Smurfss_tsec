@@ -1,116 +1,158 @@
 import { Recipe, Ingredient, NutritionInfo } from '../types/Recipe';
 
-const SPOONACULAR_API_KEY = import.meta.env.VITE_SPOONACULAR_API_KEY || 'demo_key';
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.spoonacular.com/recipes';
+const EDAMAM_APP_ID = import.meta.env.VITE_EDAMAM_APP_ID || 'demo_id';
+const EDAMAM_APP_KEY = import.meta.env.VITE_EDAMAM_APP_KEY || 'demo_key';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.edamam.com/api/recipes/v2';
 
-// Interface for Spoonacular API response
-interface SpoonacularRecipe {
-  id: number;
-  title: string;
-  summary: string;
+// Interface for Edamam API response
+interface EdamamResponse {
+  hits: EdamamHit[];
+  _links?: {
+    next?: {
+      href: string;
+    };
+  };
+}
+
+interface EdamamHit {
+  recipe: EdamamRecipe;
+}
+
+interface EdamamRecipe {
+  uri: string;
+  label: string;
   image: string;
-  readyInMinutes: number;
-  servings: number;
-  extendedIngredients: SpoonacularIngredient[];
-  analyzedInstructions: SpoonacularInstruction[];
-  nutrition?: SpoonacularNutrition;
-  dishTypes: string[];
-  diets: string[];
+  source: string;
+  url: string;
+  shareAs: string;
+  yield: number;
+  dietLabels: string[];
+  healthLabels: string[];
+  cautions: string[];
+  ingredientLines: string[];
+  ingredients: EdamamIngredient[];
+  calories: number;
+  totalTime: number;
+  cuisineType: string[];
+  mealType: string[];
+  dishType: string[];
+  totalNutrients: { [key: string]: EdamamNutrient };
+  totalDaily: { [key: string]: EdamamNutrient };
 }
 
-interface SpoonacularIngredient {
-  id: number;
-  name: string;
-  amount: number;
+interface EdamamIngredient {
+  text: string;
+  quantity: number;
+  measure: string;
+  food: string;
+  weight: number;
+  foodCategory: string;
+}
+
+interface EdamamNutrient {
+  label: string;
+  quantity: number;
   unit: string;
-  aisle: string;
-}
-
-interface SpoonacularInstruction {
-  steps: {
-    number: number;
-    step: string;
-  }[];
-}
-
-interface SpoonacularNutrition {
-  nutrients: {
-    name: string;
-    amount: number;
-    unit: string;
-  }[];
 }
 
 class RecipeApiService {
-  private apiKey: string;
+  private appId: string;
+  private appKey: string;
 
-  constructor(apiKey: string = SPOONACULAR_API_KEY) {
-    this.apiKey = apiKey;
+  constructor(appId: string = EDAMAM_APP_ID, appKey: string = EDAMAM_APP_KEY) {
+    this.appId = appId;
+    this.appKey = appKey;
+    console.log('RecipeApiService initialized with Edamam credentials:', 
+      this.appId ? 'App ID Present' : 'App ID Missing', 
+      this.appKey ? 'App Key Present' : 'App Key Missing');
+    console.log('Base URL:', BASE_URL);
+  }
+
+  // Test API connectivity
+  async testApi(): Promise<boolean> {
+    try {
+      const url = `${BASE_URL}?type=public&q=pasta&app_id=${this.appId}&app_key=${this.appKey}&from=0&to=1`;
+      console.log('Testing Edamam API with URL:', url);
+      console.log('App ID being used:', this.appId);
+      console.log('App Key being used:', this.appKey ? 'Present' : 'Missing');
+      
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        }
+      });
+      
+      console.log('Test API response status:', response.status);
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Test API successful, data:', data);
+        return true;
+      } else {
+        const errorText = await response.text();
+        console.error('Test API failed:', response.status, errorText);
+        
+        // Check for common error codes
+        if (response.status === 401) {
+          console.error('Edamam credentials are invalid');
+        } else if (response.status === 403) {
+          console.error('Edamam API access forbidden - check your plan limits');
+        } else if (response.status === 429) {
+          console.error('Edamam API rate limit exceeded');
+        }
+        
+        return false;
+      }
+    } catch (error) {
+      console.error('Test API network error:', error);
+      return false;
+    }
   }
 
   // Search recipes with nutritional information
   async searchRecipes(query: string = '', number: number = 20): Promise<Recipe[]> {
     try {
-      const url = `${BASE_URL}/complexSearch?query=${encodeURIComponent(query)}&number=${number}&addRecipeInformation=true&addRecipeNutrition=true&apiKey=${this.apiKey}`;
-      console.log('Fetching recipes from:', url);
+      const url = `${BASE_URL}?type=public&q=${encodeURIComponent(query)}&app_id=${this.appId}&app_key=${this.appKey}&from=0&to=${number}`;
+      console.log('Fetching recipes from Edamam:', url);
       
       const response = await fetch(url);
       console.log('Response status:', response.status);
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('API Error Response:', errorText);
+        console.error('Edamam API Error Response:', errorText);
         throw new Error(`API request failed: ${response.status} - ${errorText}`);
       }
 
-      const data = await response.json();
-      console.log('API Response data:', data);
+      const data: EdamamResponse = await response.json();
+      console.log('Edamam API Response data:', data);
       
-      if (!data.results || data.results.length === 0) {
-        console.log('No results found in API response');
+      if (!data.hits || data.hits.length === 0) {
+        console.log('No results found in Edamam API response');
         return this.getFallbackRecipes();
       }
       
-      const transformedRecipes = data.results.map((recipe: SpoonacularRecipe) => this.transformRecipe(recipe));
+      const transformedRecipes = data.hits.map((hit) => this.transformEdamamRecipe(hit.recipe));
       console.log('Transformed recipes count:', transformedRecipes.length);
       
       return transformedRecipes;
     } catch (error) {
-      console.error('Error fetching recipes:', error);
+      console.error('Error fetching recipes from Edamam:', error);
       // Return fallback recipes if API fails
       return this.getFallbackRecipes();
     }
   }
 
-  // Get random recipes
+  // Get random recipes (Edamam doesn't have random endpoint, so we'll search popular terms)
   async getRandomRecipes(number: number = 20): Promise<Recipe[]> {
     try {
-      // Start with a simpler single request
-      const requestNumber = Math.min(number, 100); // Limit to 100 per request
-      const url = `${BASE_URL}/random?number=${requestNumber}&addRecipeNutrition=true&apiKey=${this.apiKey}`;
-      console.log('Fetching random recipes from:', url);
+      // Use popular search terms to get variety
+      const popularTerms = ['chicken', 'pasta', 'salad', 'soup', 'rice', 'beef', 'fish', 'vegetarian'];
+      const randomTerm = popularTerms[Math.floor(Math.random() * popularTerms.length)];
       
-      const response = await fetch(url);
-      console.log('Random recipes response status:', response.status);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Random recipes API Error:', errorText);
-        throw new Error(`API request failed: ${response.status} - ${errorText}`);
-      }
-
-      const data = await response.json();
-      console.log('Random recipes API Response:', data);
-      
-      if (!data.recipes || data.recipes.length === 0) {
-        console.log('No random recipes found in API response');
-        return this.getFallbackRecipes();
-      }
-      
-      const transformedRecipes = data.recipes.map((recipe: SpoonacularRecipe) => this.transformRecipe(recipe));
-      console.log('Transformed random recipes count:', transformedRecipes.length);
-      
-      return transformedRecipes;
+      console.log(`Fetching "random" recipes using search term: ${randomTerm}`);
+      return await this.searchRecipes(randomTerm, number);
     } catch (error) {
       console.error('Error fetching random recipes:', error);
       return this.getFallbackRecipes();
@@ -144,16 +186,17 @@ class RecipeApiService {
   // Get vegetarian recipes
   async getVegetarianRecipes(number: number = 20): Promise<Recipe[]> {
     try {
-      const response = await fetch(
-        `${BASE_URL}/complexSearch?diet=vegetarian&number=${number}&addRecipeInformation=true&addRecipeNutrition=true&apiKey=${this.apiKey}`
-      );
+      const url = `${BASE_URL}?type=public&q=vegetarian&health=vegetarian&app_id=${this.appId}&app_key=${this.appKey}&from=0&to=${number}`;
+      console.log('Fetching vegetarian recipes from Edamam:', url);
+      
+      const response = await fetch(url);
 
       if (!response.ok) {
         throw new Error(`API request failed: ${response.status}`);
       }
 
-      const data = await response.json();
-      return data.results.map((recipe: SpoonacularRecipe) => this.transformRecipe(recipe));
+      const data: EdamamResponse = await response.json();
+      return data.hits.map((hit) => this.transformEdamamRecipe(hit.recipe));
     } catch (error) {
       console.error('Error fetching vegetarian recipes:', error);
       return this.getFallbackRecipes().filter(recipe => 
@@ -165,16 +208,17 @@ class RecipeApiService {
   // Get vegan recipes
   async getVeganRecipes(number: number = 20): Promise<Recipe[]> {
     try {
-      const response = await fetch(
-        `${BASE_URL}/complexSearch?diet=vegan&number=${number}&addRecipeInformation=true&addRecipeNutrition=true&apiKey=${this.apiKey}`
-      );
+      const url = `${BASE_URL}?type=public&q=vegan&health=vegan&app_id=${this.appId}&app_key=${this.appKey}&from=0&to=${number}`;
+      console.log('Fetching vegan recipes from Edamam:', url);
+      
+      const response = await fetch(url);
 
       if (!response.ok) {
         throw new Error(`API request failed: ${response.status}`);
       }
 
-      const data = await response.json();
-      return data.results.map((recipe: SpoonacularRecipe) => this.transformRecipe(recipe));
+      const data: EdamamResponse = await response.json();
+      return data.hits.map((hit) => this.transformEdamamRecipe(hit.recipe));
     } catch (error) {
       console.error('Error fetching vegan recipes:', error);
       return this.getFallbackRecipes().filter(recipe => 
@@ -183,44 +227,22 @@ class RecipeApiService {
     }
   }
 
-  // Get non-vegetarian recipes (recipes that are not vegetarian or vegan)
+  // Get non-vegetarian recipes
   async getNonVegetarianRecipes(number: number = 20): Promise<Recipe[]> {
     try {
-      // Search for recipes with different types of meat to get variety
-      const meatQueries = ['chicken', 'beef', 'pork', 'fish', 'seafood', 'turkey', 'lamb', 'bacon', 'salmon', 'shrimp'];
-      const recipesPerQuery = Math.ceil(number / meatQueries.length);
-      const allRecipes: Recipe[] = [];
-
-      // Fetch recipes for multiple meat types to get variety
-      for (let i = 0; i < Math.min(meatQueries.length, Math.ceil(number / 10)); i++) {
-        const query = meatQueries[i];
-        
-        const response = await fetch(
-          `${BASE_URL}/complexSearch?query=${query}&number=${recipesPerQuery}&addRecipeInformation=true&addRecipeNutrition=true&apiKey=${this.apiKey}`
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          const batchRecipes = data.results
-            .map((recipe: SpoonacularRecipe) => this.transformRecipe(recipe))
-            .filter(recipe => !recipe.tags.some(tag => 
-              tag.toLowerCase().includes('vegetarian') || tag.toLowerCase().includes('vegan')
-            ));
-          allRecipes.push(...batchRecipes);
-
-          // Add delay between requests
-          if (i < Math.ceil(number / 10) - 1) {
-            await new Promise(resolve => setTimeout(resolve, 100));
-          }
-        }
-      }
-
-      // Remove duplicates and return up to requested number
-      const uniqueRecipes = allRecipes.filter((recipe, index, self) => 
-        index === self.findIndex(r => r.id === recipe.id)
-      );
+      // Search for meat-based recipes
+      const meatQueries = ['chicken', 'beef', 'pork', 'fish', 'seafood'];
+      const randomMeat = meatQueries[Math.floor(Math.random() * meatQueries.length)];
       
-      return uniqueRecipes.slice(0, number);
+      console.log(`Fetching non-vegetarian recipes with: ${randomMeat}`);
+      const recipes = await this.searchRecipes(randomMeat, number);
+      
+      // Filter out any vegetarian/vegan recipes
+      return recipes.filter(recipe => 
+        !recipe.tags.some(tag => 
+          tag.toLowerCase().includes('vegetarian') || tag.toLowerCase().includes('vegan')
+        )
+      );
     } catch (error) {
       console.error('Error fetching non-vegetarian recipes:', error);
       return this.getFallbackRecipes().filter(recipe => 
@@ -234,82 +256,89 @@ class RecipeApiService {
   // Get diverse recipes from multiple categories
   async getDiverseRecipes(number: number = 100): Promise<Recipe[]> {
     try {
-      const categories = ['italian', 'mexican', 'asian', 'indian', 'mediterranean', 'american', 'french', 'thai'];
-      const recipesPerCategory = Math.ceil(number / categories.length);
+      console.log('Fetching diverse recipes from Edamam...');
+      
+      // First test API connectivity
+      const isApiWorking = await this.testApi();
+      if (!isApiWorking) {
+        console.log('Edamam API test failed, returning fallback recipes');
+        return this.getFallbackRecipes();
+      }
+      
+      // Try searches for different cuisines and meal types
+      const queries = ['italian', 'mexican', 'asian', 'american', 'mediterranean', 'indian'];
       const allRecipes: Recipe[] = [];
-
-      for (let i = 0; i < categories.length; i++) {
-        const category = categories[i];
-        
-        const response = await fetch(
-          `${BASE_URL}/complexSearch?cuisine=${category}&number=${recipesPerCategory}&addRecipeInformation=true&addRecipeNutrition=true&apiKey=${this.apiKey}`
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          const batchRecipes = data.results.map((recipe: SpoonacularRecipe) => this.transformRecipe(recipe));
-          allRecipes.push(...batchRecipes);
-
-          // Add delay between requests
-          if (i < categories.length - 1) {
-            await new Promise(resolve => setTimeout(resolve, 100));
-          }
+      
+      for (const query of queries) {
+        try {
+          const recipes = await this.searchRecipes(query, Math.ceil(number / queries.length));
+          allRecipes.push(...recipes);
+          console.log(`Fetched ${recipes.length} recipes for cuisine: ${query}`);
+          
+          // Add small delay to respect rate limits
+          await new Promise(resolve => setTimeout(resolve, 200));
+        } catch (error) {
+          console.error(`Failed to fetch recipes for cuisine: ${query}`, error);
         }
       }
-
-      // Remove duplicates and shuffle
+      
+      // Remove duplicates
       const uniqueRecipes = allRecipes.filter((recipe, index, self) => 
         index === self.findIndex(r => r.id === recipe.id)
       );
       
-      // Shuffle array for variety
-      for (let i = uniqueRecipes.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [uniqueRecipes[i], uniqueRecipes[j]] = [uniqueRecipes[j], uniqueRecipes[i]];
-      }
-      
+      console.log(`Total unique recipes fetched from Edamam: ${uniqueRecipes.length}`);
       return uniqueRecipes.slice(0, number);
+      
     } catch (error) {
-      console.error('Error fetching diverse recipes:', error);
+      console.error('Error fetching diverse recipes from Edamam:', error);
       return this.getFallbackRecipes();
     }
   }
 
-  // Transform Spoonacular recipe to our Recipe interface
-  private transformRecipe(spoonacularRecipe: SpoonacularRecipe): Recipe {
-    const ingredients: Ingredient[] = spoonacularRecipe.extendedIngredients.map((ing, index) => ({
-      id: ing.id.toString(),
-      name: ing.name,
-      amount: ing.amount,
-      unit: ing.unit,
-      category: ing.aisle || 'Other'
+  // Transform Edamam recipe to our Recipe interface
+  private transformEdamamRecipe(edamamRecipe: EdamamRecipe): Recipe {
+    // Extract recipe ID from URI
+    const id = edamamRecipe.uri.split('#recipe_')[1] || Math.random().toString(36);
+    
+    // Transform ingredients
+    const ingredients: Ingredient[] = edamamRecipe.ingredients.map((ing, index) => ({
+      id: index.toString(),
+      name: ing.food,
+      amount: Math.round(ing.quantity * 100) / 100,
+      unit: ing.measure || 'unit',
+      category: ing.foodCategory || 'Other'
     }));
 
-    const instructions: string[] = spoonacularRecipe.analyzedInstructions[0]?.steps.map(
-      step => step.step
-    ) || ['Instructions not available'];
+    // Use ingredient lines as instructions if no detailed instructions available
+    const instructions: string[] = edamamRecipe.ingredientLines.length > 0 
+      ? [`Ingredients: ${edamamRecipe.ingredientLines.join(', ')}`, 'Follow standard cooking methods for this type of dish']
+      : ['Instructions not available - please refer to original source'];
 
-    const nutrition = this.transformNutrition(spoonacularRecipe.nutrition);
-
-    const difficulty = this.determineDifficulty(spoonacularRecipe.readyInMinutes, ingredients.length);
+    const nutrition = this.transformEdamamNutrition(edamamRecipe.totalNutrients);
     
-    const category = spoonacularRecipe.dishTypes[0] || 'Other';
+    const totalTime = edamamRecipe.totalTime || 30;
+    const difficulty = this.determineDifficulty(totalTime, ingredients.length);
+    
+    const category = edamamRecipe.dishType[0] || edamamRecipe.mealType[0] || 'Other';
     
     const tags = [
-      ...spoonacularRecipe.diets,
-      ...spoonacularRecipe.dishTypes
+      ...edamamRecipe.dietLabels,
+      ...edamamRecipe.healthLabels,
+      ...edamamRecipe.cuisineType,
+      ...edamamRecipe.dishType
     ].filter(Boolean);
 
     return {
-      id: spoonacularRecipe.id.toString(),
-      name: spoonacularRecipe.title,
-      description: this.stripHtml(spoonacularRecipe.summary).substring(0, 200) + '...',
-      image: spoonacularRecipe.image,
+      id,
+      name: edamamRecipe.label,
+      description: `Delicious ${category.toLowerCase()} recipe with ${ingredients.length} ingredients. ${edamamRecipe.source ? `Recipe by ${edamamRecipe.source}` : ''}`.substring(0, 200),
+      image: edamamRecipe.image,
       category: this.capitalizeFirst(category),
       difficulty,
-      prepTime: Math.max(10, Math.floor(spoonacularRecipe.readyInMinutes * 0.3)),
-      cookTime: Math.max(5, Math.floor(spoonacularRecipe.readyInMinutes * 0.7)),
-      servings: spoonacularRecipe.servings,
+      prepTime: Math.max(5, Math.floor(totalTime * 0.3)),
+      cookTime: Math.max(5, Math.floor(totalTime * 0.7)),
+      servings: edamamRecipe.yield || 4,
       ingredients,
       instructions,
       nutrition,
@@ -317,71 +346,38 @@ class RecipeApiService {
     };
   }
 
-  // Transform nutrition data
-  private transformNutrition(spoonacularNutrition?: SpoonacularNutrition): NutritionInfo {
-    const defaultNutrition: NutritionInfo = {
-      calories: 0,
-      protein: 0,
-      carbs: 0,
-      fat: 0,
-      fiber: 0,
-      sugar: 0,
-      sodium: 0,
-      cholesterol: 0,
-      vitamins: {
-        vitaminA: 0,
-        vitaminC: 0,
-        vitaminD: 0,
-        vitaminE: 0,
-        vitaminK: 0,
-        vitaminB6: 0,
-        vitaminB12: 0,
-        folate: 0
-      },
-      minerals: {
-        calcium: 0,
-        iron: 0,
-        magnesium: 0,
-        potassium: 0,
-        zinc: 0
-      }
-    };
-
-    if (!spoonacularNutrition?.nutrients) {
-      return defaultNutrition;
-    }
-
-    const nutrients = spoonacularNutrition.nutrients;
-    const getNutrient = (name: string): number => {
-      const nutrient = nutrients.find(n => n.name.toLowerCase().includes(name.toLowerCase()));
-      return nutrient ? Math.round(nutrient.amount) : 0;
+  // Transform Edamam nutrition data
+  private transformEdamamNutrition(totalNutrients: { [key: string]: EdamamNutrient }): NutritionInfo {
+    const getNutrient = (key: string): number => {
+      const nutrient = totalNutrients[key];
+      return nutrient ? Math.round(nutrient.quantity) : 0;
     };
 
     return {
-      calories: getNutrient('calories'),
-      protein: getNutrient('protein'),
-      carbs: getNutrient('carbohydrates'),
-      fat: getNutrient('fat'),
-      fiber: getNutrient('fiber'),
-      sugar: getNutrient('sugar'),
-      sodium: getNutrient('sodium'),
-      cholesterol: getNutrient('cholesterol'),
+      calories: getNutrient('ENERC_KCAL'),
+      protein: getNutrient('PROCNT'),
+      carbs: getNutrient('CHOCDF'),
+      fat: getNutrient('FAT'),
+      fiber: getNutrient('FIBTG'),
+      sugar: getNutrient('SUGAR'),
+      sodium: getNutrient('NA'),
+      cholesterol: getNutrient('CHOLE'),
       vitamins: {
-        vitaminA: getNutrient('vitamin a'),
-        vitaminC: getNutrient('vitamin c'),
-        vitaminD: getNutrient('vitamin d'),
-        vitaminE: getNutrient('vitamin e'),
-        vitaminK: getNutrient('vitamin k'),
-        vitaminB6: getNutrient('vitamin b6'),
-        vitaminB12: getNutrient('vitamin b12'),
-        folate: getNutrient('folate')
+        vitaminA: getNutrient('VITA_RAE'),
+        vitaminC: getNutrient('VITC'),
+        vitaminD: getNutrient('VITD'),
+        vitaminE: getNutrient('TOCPHA'),
+        vitaminK: getNutrient('VITK1'),
+        vitaminB6: getNutrient('VITB6A'),
+        vitaminB12: getNutrient('VITB12'),
+        folate: getNutrient('FOLFD')
       },
       minerals: {
-        calcium: getNutrient('calcium'),
-        iron: getNutrient('iron'),
-        magnesium: getNutrient('magnesium'),
-        potassium: getNutrient('potassium'),
-        zinc: getNutrient('zinc')
+        calcium: getNutrient('CA'),
+        iron: getNutrient('FE'),
+        magnesium: getNutrient('MG'),
+        potassium: getNutrient('K'),
+        zinc: getNutrient('ZN')
       }
     };
   }
@@ -403,60 +399,18 @@ class RecipeApiService {
 
   // Fallback recipes (your existing static data)
   private getFallbackRecipes(): Recipe[] {
-    // Return a subset of popular recipes as fallback
-    return [
-      {
-        id: 'fallback-1',
-        name: 'Healthy Buddha Bowl',
-        description: 'Nutritious bowl with quinoa, roasted vegetables, and tahini dressing',
-        image: 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800',
-        category: 'Healthy',
-        difficulty: 'Easy' as const,
-        prepTime: 15,
-        cookTime: 25,
-        servings: 2,
-        ingredients: [
-          { id: '1', name: 'Quinoa', amount: 1, unit: 'cup', category: 'Grains' },
-          { id: '2', name: 'Sweet potato', amount: 1, unit: 'large', category: 'Vegetables' },
-          { id: '3', name: 'Chickpeas', amount: 1, unit: 'can', category: 'Legumes' }
-        ],
-        instructions: [
-          'Cook quinoa according to package instructions',
-          'Roast sweet potato and chickpeas at 400°F for 20 minutes',
-          'Assemble bowl with quinoa, vegetables, and dressing'
-        ],
-        nutrition: {
-          calories: 420,
-          protein: 15,
-          carbs: 65,
-          fat: 12,
-          fiber: 12,
-          sugar: 8,
-          sodium: 320,
-          cholesterol: 0,
-          vitamins: {
-            vitaminA: 184,
-            vitaminC: 28,
-            vitaminD: 0,
-            vitaminE: 15,
-            vitaminK: 45,
-            vitaminB6: 25,
-            vitaminB12: 0,
-            folate: 35
-          },
-          minerals: {
-            calcium: 85,
-            iron: 4,
-            magnesium: 95,
-            potassium: 680,
-            zinc: 2
-          }
-        },
-        tags: ['healthy', 'vegetarian', 'vegan', 'gluten-free']
-      }
-    ];
+    console.log('Using fallback recipes - returning all local recipes');
+    // Import and return all existing recipes as fallback
+    const { recipes } = require('../data/recipes');
+    return recipes || [];
   }
 }
 
 export const recipeApi = new RecipeApiService();
+
+// Expose to window for debugging
+if (typeof window !== 'undefined') {
+  (window as any).recipeApi = recipeApi;
+}
+
 export default RecipeApiService;

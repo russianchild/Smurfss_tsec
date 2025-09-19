@@ -26,29 +26,33 @@ export const useRecipes = (): UseRecipesReturn => {
   const loadRandomRecipes = async () => {
     setLoading(true);
     setError(null);
+    console.log('Loading recipes...');
+    
+    // Always start with local recipes so user sees content immediately
+    setRecipes(fallbackRecipes);
+    
     try {
-      // Try to get diverse recipes first, then random as fallback
-      let apiRecipes = await recipeApi.getDiverseRecipes(150);
-      
-      // If diverse recipes didn't return enough, supplement with random recipes
-      if (apiRecipes.length < 100) {
-        const randomRecipes = await recipeApi.getRandomRecipes(100);
-        const combinedRecipes = [...apiRecipes, ...randomRecipes];
-        
-        // Remove duplicates
-        apiRecipes = combinedRecipes.filter((recipe, index, self) => 
-          index === self.findIndex(r => r.id === recipe.id)
-        );
-      }
+      // Try to get API recipes to supplement local ones
+      console.log('Attempting to fetch recipes from API...');
+      const apiRecipes = await recipeApi.getDiverseRecipes(50);
+      console.log('API recipes received:', apiRecipes.length);
       
       if (apiRecipes.length > 0) {
-        setRecipes([...fallbackRecipes, ...apiRecipes]);
+        console.log('Adding API recipes to local recipes');
+        // Remove duplicates and combine
+        const combinedRecipes = [...fallbackRecipes, ...apiRecipes];
+        const uniqueRecipes = combinedRecipes.filter((recipe, index, self) => 
+          index === self.findIndex(r => r.id === recipe.id)
+        );
+        setRecipes(uniqueRecipes);
       } else {
-        setRecipes(fallbackRecipes);
+        console.log('No API recipes received, keeping local recipes only');
+        // Keep the local recipes that are already set
       }
     } catch (err) {
-      setError('Failed to load recipes from API');
-      setRecipes(fallbackRecipes);
+      console.error('Error in loadRandomRecipes:', err);
+      setError('API unavailable - showing local recipes only');
+      // Keep the local recipes that are already set
     } finally {
       setLoading(false);
     }

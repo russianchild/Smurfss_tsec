@@ -89,14 +89,27 @@ export const RecipeSearch: React.FC<RecipeSearchProps> = ({ onNavigate, onSelect
             <p className="text-gray-400">Find the perfect recipe for your next meal</p>
           </div>
         </div>
-        <button
-          onClick={refreshRecipes}
-          disabled={loading}
-          className="flex items-center px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 text-white rounded-lg transition-colors"
-        >
-          <RefreshCw size={16} className={`mr-2 ${loading ? 'animate-spin' : ''}`} />
-          Refresh
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={async () => {
+              console.log('Testing API...');
+              const testResult = await (window as any).recipeApi?.testApi();
+              console.log('API test result:', testResult);
+              alert(`API Test: ${testResult ? 'Success' : 'Failed'}`);
+            }}
+            className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm"
+          >
+            Test API
+          </button>
+          <button
+            onClick={refreshRecipes}
+            disabled={loading}
+            className="flex items-center px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 text-white rounded-lg transition-colors"
+          >
+            <RefreshCw size={16} className={`mr-2 ${loading ? 'animate-spin' : ''}`} />
+            Refresh
+          </button>
+        </div>
       </div>
 
       {/* Error Message */}
