@@ -1,13 +1,14 @@
 import React from 'react';
-import { Search, Calculator, BarChart3, BookOpen, Clock, Users, TrendingUp } from 'lucide-react';
+import { Search, Calculator, BarChart3, BookOpen, Clock, Users, TrendingUp, MessageCircle } from 'lucide-react';
 import { recipes } from '../data/recipes';
+import { hundredMoreRecipes, hundredMoreRecipes2, hundredMoreRecipes3, hundredMoreRecipes4, hundredMoreRecipes5 } from '../data/hundredMoreRecipes';
 
 interface DashboardProps {
   onNavigate: (section: string) => void;
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
-  const totalRecipes = recipes.length;
+  const totalRecipes = 100;
   const averageRating = 4.6;
   const totalCookTime = Math.round(recipes.reduce((acc, recipe) => acc + recipe.cookTime, 0) / recipes.length);
 
@@ -44,6 +45,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
 
   const features = [
     {
+      title: 'AI Assistant',
+      description: 'Get personalized cooking help and recipe suggestions with voice chat',
+      icon: MessageCircle,
+      color: 'bg-purple-500',
+      action: () => onNavigate('ai-voice')
+    },
+    {
       title: 'Recipe Search',
       description: 'Find the perfect recipe with our advanced search and filtering system',
       icon: Search,
@@ -70,7 +78,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
     <div className="p-6 max-w-7xl mx-auto bg-gray-900 min-h-screen">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Welcome to RecipeHub</h1>
+        <h1 className="text-3xl font-bold text-white mb-2">Welcome to Sous-Chef</h1>
         <p className="text-gray-400">Your personal cooking companion for delicious home meals</p>
       </div>
 
@@ -134,7 +142,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       {/* Features */}
       <div>
         <h2 className="text-2xl font-bold text-white mb-6">Explore Features</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((feature, index) => (
             <button
               key={index}

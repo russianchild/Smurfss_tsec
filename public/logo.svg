@@ -1,0 +1,21 @@
+<svg width="32" height="32" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Chef Hat -->
+  <path d="M25 35 C25 25, 35 20, 50 20 C65 20, 75 25, 75 35 C75 30, 70 25, 65 25 C60 25, 55 30, 50 30 C45 30, 40 25, 35 25 C30 25, 25 30, 25 35 Z" fill="white" stroke="#4A4A4A" stroke-width="3"/>
+  
+  <!-- Hat Band -->
+  <rect x="25" y="35" width="50" height="8" fill="white" stroke="#4A4A4A" stroke-width="3"/>
+  
+  <!-- Microphone Body -->
+  <ellipse cx="50" cy="60" rx="12" ry="20" fill="#F4D03F" stroke="#4A4A4A" stroke-width="3"/>
+  
+  <!-- Microphone Grille Lines -->
+  <line x1="42" y1="55" x2="58" y2="55" stroke="#4A4A4A" stroke-width="2"/>
+  <line x1="42" y1="60" x2="58" y2="60" stroke="#4A4A4A" stroke-width="2"/>
+  <line x1="42" y1="65" x2="58" y2="65" stroke="#4A4A4A" stroke-width="2"/>
+  
+  <!-- Microphone Stand -->
+  <rect x="48" y="80" width="4" height="15" fill="#4A4A4A"/>
+  
+  <!-- Base -->
+  <ellipse cx="50" cy="95" rx="8" ry="3" fill="#4A4A4A"/>
+</svg>

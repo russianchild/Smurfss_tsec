@@ -25,11 +25,13 @@ export const Navigation: React.FC<NavigationProps> = ({ activeSection, onNavigat
           <div className="flex items-center justify-between h-16">
             {/* Logo and Brand */}
             <div className="flex items-center">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm mr-3">
-                S
-              </div>
+              <img 
+                src="/logo.svg" 
+                alt="Sous-Chef Logo" 
+                className="w-8 h-8 mr-3"
+              />
               <div>
-                <h1 className="text-lg font-bold text-white">SousAI</h1>
+                <h1 className="text-lg font-bold text-white">Sous-Chef</h1>
                 <p className="text-xs text-gray-400 hidden sm:block">AI-Powered Culinary Assistant</p>
               </div>
             </div>
