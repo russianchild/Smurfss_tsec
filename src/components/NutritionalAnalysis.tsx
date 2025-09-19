@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BarChart3, ArrowLeft, TrendingUp, Activity, Target, Info } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { BarChart3, ArrowLeft, TrendingUp, Activity, Target, Info, Search } from 'lucide-react';
 import { recipes } from '../data/recipes';
 import { Recipe } from '../types/Recipe';
 
@@ -10,6 +10,17 @@ interface NutritionalAnalysisProps {
 export const NutritionalAnalysis: React.FC<NutritionalAnalysisProps> = ({ onNavigate }) => {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(recipes[0]);
   const [servingSize, setServingSize] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Filter recipes based on search term
+  const filteredRecipes = useMemo(() => {
+    if (!searchTerm.trim()) return recipes;
+    
+    return recipes.filter(recipe => 
+      recipe.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      recipe.category.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [searchTerm]);
 
   const dailyValues = {
     calories: 2000,
@@ -77,44 +88,43 @@ export const NutritionalAnalysis: React.FC<NutritionalAnalysisProps> = ({ onNavi
         <div className="lg:col-span-1">
           <div className="bg-gray-800 rounded-xl shadow-sm border border-gray-700 p-6 sticky top-6">
             <h2 className="text-lg font-semibold text-white mb-4">Select Recipe</h2>
-            <div className="space-y-3 mb-6">
-              {recipes.map((recipe) => (
-                <button
-                  key={recipe.id}
-                  onClick={() => setSelectedRecipe(recipe)}
-                  className={`w-full text-left p-3 rounded-lg border transition-colors ${
-                    selectedRecipe?.id === recipe.id
-                      ? 'border-orange-500 bg-orange-900'
-                      : 'border-gray-600 hover:border-gray-500 hover:bg-gray-700'
-                  }`}
-                >
-                  <div className="font-medium text-white text-sm">{recipe.name}</div>
-                  <div className="text-xs text-gray-400">{recipe.category}</div>
-                </button>
-              ))}
+            
+            {/* Search Input */}
+            <div className="relative mb-4">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+              <input
+                type="text"
+                placeholder="Search recipes..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Serving Size
-              </label>
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() => setServingSize(Math.max(0.5, servingSize - 0.5))}
-                  className="p-2 border border-gray-600 text-white rounded-lg hover:bg-gray-700"
-                >
-                  -
-                </button>
-                <span className="px-4 py-2 bg-gray-700 text-white rounded-lg font-medium min-w-[60px] text-center">
-                  {servingSize}
-                </span>
-                <button
-                  onClick={() => setServingSize(servingSize + 0.5)}
-                  className="p-2 border border-gray-600 text-white rounded-lg hover:bg-gray-700"
-                >
-                  +
-                </button>
-              </div>
+            {/* Recipe List with Hidden Scrollbar */}
+            <div className="space-y-3 max-h-96 overflow-y-auto scrollbar-hidden">
+              {filteredRecipes.length > 0 ? (
+                filteredRecipes.map((recipe) => (
+                  <button
+                    key={recipe.id}
+                    onClick={() => setSelectedRecipe(recipe)}
+                    className={`w-full text-left p-3 rounded-lg border transition-colors ${
+                      selectedRecipe?.id === recipe.id
+                        ? 'border-orange-500 bg-orange-900'
+                        : 'border-gray-600 hover:border-gray-500 hover:bg-gray-700'
+                    }`}
+                  >
+                    <div className="font-medium text-white text-sm">{recipe.name}</div>
+                    <div className="text-xs text-gray-400">{recipe.category}</div>
+                  </button>
+                ))
+              ) : (
+                <div className="text-center py-8">
+                  <Search className="mx-auto text-gray-500 mb-2" size={24} />
+                  <p className="text-gray-400 text-sm">No recipes found</p>
+                  <p className="text-gray-500 text-xs">Try a different search term</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -191,7 +201,29 @@ export const NutritionalAnalysis: React.FC<NutritionalAnalysisProps> = ({ onNavi
 
               {/* Detailed Nutrients */}
               <div className="bg-gray-800 rounded-xl shadow-sm border border-gray-700 p-6">
-                <h3 className="text-xl font-semibold text-white mb-6">Detailed Nutrients</h3>
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-semibold text-white">Detailed Nutrients</h3>
+                  <div className="flex items-center space-x-2">
+                    <label className="text-sm font-medium text-gray-300 mr-2">
+                      Serving Size
+                    </label>
+                    <button
+                      onClick={() => setServingSize(Math.max(0.5, servingSize - 0.5))}
+                      className="p-2 border border-gray-600 text-white rounded-lg hover:bg-gray-700"
+                    >
+                      -
+                    </button>
+                    <span className="px-4 py-2 bg-gray-700 text-white rounded-lg font-medium min-w-[60px] text-center">
+                      {servingSize}
+                    </span>
+                    <button
+                      onClick={() => setServingSize(servingSize + 0.5)}
+                      className="p-2 border border-gray-600 text-white rounded-lg hover:bg-gray-700"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* General Nutrients */}

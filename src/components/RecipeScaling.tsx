@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Calculator, ArrowLeft, Users, Plus, Minus } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Calculator, ArrowLeft, Users, Plus, Minus, Search } from 'lucide-react';
 import { Recipe, Ingredient } from '../types/Recipe';
 import { useRecipes } from '../hooks/useRecipes';
 
@@ -11,6 +11,17 @@ export const RecipeScaling: React.FC<RecipeScalingProps> = ({ onNavigate }) => {
   const { recipes } = useRecipes();
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [targetServings, setTargetServings] = useState(4);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Filter recipes based on search term
+  const filteredRecipes = useMemo(() => {
+    if (!searchTerm.trim()) return recipes;
+    
+    return recipes.filter(recipe => 
+      recipe.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      recipe.category.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [recipes, searchTerm]);
 
   const scalingFactor = selectedRecipe ? targetServings / selectedRecipe.servings : 1;
 
@@ -69,33 +80,55 @@ export const RecipeScaling: React.FC<RecipeScalingProps> = ({ onNavigate }) => {
         <div className="lg:col-span-1">
           <div className="bg-gray-800 rounded-xl shadow-sm border border-gray-700 p-6 mb-6">
             <h2 className="text-lg font-semibold text-white mb-4">Select Recipe</h2>
-            <div className="space-y-3">
-              {recipes.map((recipe) => (
-                <button
-                  key={recipe.id}
-                  onClick={() => setSelectedRecipe(recipe)}
-                  className={`w-full text-left p-4 rounded-lg border transition-colors ${
-                    selectedRecipe?.id === recipe.id
-                      ? 'border-blue-500 bg-blue-900'
-                      : 'border-gray-600 hover:border-gray-500 hover:bg-gray-700'
-                  }`}
-                >
-                  <div className="flex items-center">
-                    <img 
-                      src={recipe.image} 
-                      alt={recipe.name}
-                      className="w-12 h-12 object-cover rounded-lg mr-3"
-                    />
-                    <div>
-                      <h3 className="font-medium text-white">{recipe.name}</h3>
-                      <p className="text-sm text-gray-400 flex items-center">
-                        <Users size={12} className="mr-1" />
-                        {recipe.servings} servings
-                      </p>
+            
+            {/* Search Input */}
+            <div className="relative mb-4">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+              <input
+                type="text"
+                placeholder="Search recipes..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+
+            {/* Recipe List with Hidden Scrollbar */}
+            <div className="space-y-3 max-h-96 overflow-y-auto scrollbar-hidden">
+              {filteredRecipes.length > 0 ? (
+                filteredRecipes.map((recipe) => (
+                  <button
+                    key={recipe.id}
+                    onClick={() => setSelectedRecipe(recipe)}
+                    className={`w-full text-left p-4 rounded-lg border transition-colors ${
+                      selectedRecipe?.id === recipe.id
+                        ? 'border-blue-500 bg-blue-900'
+                        : 'border-gray-600 hover:border-gray-500 hover:bg-gray-700'
+                    }`}
+                  >
+                    <div className="flex items-center">
+                      <img 
+                        src={recipe.image} 
+                        alt={recipe.name}
+                        className="w-12 h-12 object-cover rounded-lg mr-3"
+                      />
+                      <div>
+                        <h3 className="font-medium text-white">{recipe.name}</h3>
+                        <p className="text-sm text-gray-400 flex items-center">
+                          <Users size={12} className="mr-1" />
+                          {recipe.servings} servings
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </button>
-              ))}
+                  </button>
+                ))
+              ) : (
+                <div className="text-center py-8">
+                  <Search className="mx-auto text-gray-500 mb-2" size={24} />
+                  <p className="text-gray-400 text-sm">No recipes found</p>
+                  <p className="text-gray-500 text-xs">Try a different search term</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -1188,5 +1188,5 @@ export const hundredMoreRecipes8: Recipe[] = [
       minerals: { calcium: 65, iron: 3, magnesium: 35, potassium: 285, zinc: 3 }
     },
     tags: ['argentine', 'empanadas', 'beef', 'baked']
-     }
+  }
 ];

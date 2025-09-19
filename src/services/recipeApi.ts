@@ -68,48 +68,6 @@ class RecipeApiService {
     console.log('Base URL:', BASE_URL);
   }
 
-  // Test API connectivity
-  async testApi(): Promise<boolean> {
-    try {
-      const url = `${BASE_URL}?type=public&q=pasta&app_id=${this.appId}&app_key=${this.appKey}&from=0&to=1`;
-      console.log('Testing Edamam API with URL:', url);
-      console.log('App ID being used:', this.appId);
-      console.log('App Key being used:', this.appKey ? 'Present' : 'Missing');
-      
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-        }
-      });
-      
-      console.log('Test API response status:', response.status);
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Test API successful, data:', data);
-        return true;
-      } else {
-        const errorText = await response.text();
-        console.error('Test API failed:', response.status, errorText);
-        
-        // Check for common error codes
-        if (response.status === 401) {
-          console.error('Edamam credentials are invalid');
-        } else if (response.status === 403) {
-          console.error('Edamam API access forbidden - check your plan limits');
-        } else if (response.status === 429) {
-          console.error('Edamam API rate limit exceeded');
-        }
-        
-        return false;
-      }
-    } catch (error) {
-      console.error('Test API network error:', error);
-      return false;
-    }
-  }
-
   // Search recipes with nutritional information
   async searchRecipes(query: string = '', number: number = 20): Promise<Recipe[]> {
     try {
@@ -257,13 +215,6 @@ class RecipeApiService {
   async getDiverseRecipes(number: number = 100): Promise<Recipe[]> {
     try {
       console.log('Fetching diverse recipes from Edamam...');
-      
-      // First test API connectivity
-      const isApiWorking = await this.testApi();
-      if (!isApiWorking) {
-        console.log('Edamam API test failed, returning fallback recipes');
-        return this.getFallbackRecipes();
-      }
       
       // Try searches for different cuisines and meal types
       const queries = ['italian', 'mexican', 'asian', 'american', 'mediterranean', 'indian'];

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Search, Calculator, BarChart3, Menu, X } from 'lucide-react';
+import { Home, Search, Calculator, BarChart3, Menu, X, MessageCircle } from 'lucide-react';
 
 interface NavigationProps {
   activeSection: string;
@@ -11,6 +11,7 @@ export const Navigation: React.FC<NavigationProps> = ({ activeSection, onNavigat
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Home },
+    { id: 'ai-voice', label: 'AI Assistant', icon: MessageCircle },
     { id: 'search', label: 'Recipe Search', icon: Search },
     { id: 'calculator', label: 'Scaling Calculator', icon: Calculator },
     { id: 'nutrition', label: 'Nutrition Analysis', icon: BarChart3 }
@@ -24,12 +25,12 @@ export const Navigation: React.FC<NavigationProps> = ({ activeSection, onNavigat
           <div className="flex items-center justify-between h-16">
             {/* Logo and Brand */}
             <div className="flex items-center">
-              <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center text-white font-bold text-sm mr-3">
-                R
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm mr-3">
+                S
               </div>
               <div>
-                <h1 className="text-lg font-bold text-white">RecipeHub</h1>
-                <p className="text-xs text-gray-400 hidden sm:block">Cooking Made Easy</p>
+                <h1 className="text-lg font-bold text-white">SousAI</h1>
+                <p className="text-xs text-gray-400 hidden sm:block">AI-Powered Culinary Assistant</p>
               </div>
             </div>
 

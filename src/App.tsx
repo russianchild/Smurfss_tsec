@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navigation } from './components/Navigation';
 import { Dashboard } from './components/Dashboard';
+import { AIVoice } from './components/AIVoice';
 import { RecipeSearch } from './components/RecipeSearch';
 import { RecipeScaling } from './components/RecipeScaling';
 import { NutritionalAnalysis } from './components/NutritionalAnalysis';
@@ -21,6 +22,8 @@ function App() {
     setActiveSection('search');
   };
 
+
+
   const renderActiveSection = () => {
     switch (activeSection) {
       case 'dashboard':
@@ -31,6 +34,8 @@ function App() {
         return <RecipeScaling onNavigate={setActiveSection} />;
       case 'nutrition':
         return <NutritionalAnalysis onNavigate={setActiveSection} />;
+      case 'ai-voice':
+        return <AIVoice onNavigate={setActiveSection} />;
       case 'recipe-detail':
         return selectedRecipe ? (
           <RecipeDetail recipe={selectedRecipe} onBack={handleBackFromRecipe} />
@@ -45,7 +50,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-900">
       <Navigation activeSection={activeSection} onNavigate={setActiveSection} />
-      
+
       <main className="pt-16">
         {renderActiveSection()}
       </main>
