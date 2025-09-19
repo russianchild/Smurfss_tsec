@@ -16,6 +16,14 @@ export const RecipeSearch: React.FC<RecipeSearchProps> = ({ onNavigate, onSelect
   const [selectedDietType, setSelectedDietType] = useState('All');
   const [maxCookTime, setMaxCookTime] = useState(60);
   const [showFilters, setShowFilters] = useState(false);
+  const [dietaryRestrictions, setDietaryRestrictions] = useState({
+    glutenFree: false,
+    dairyFree: false,
+    nutFree: false,
+    peanutFree: false,
+    keto: false,
+    lowCarb: false
+  });
 
   const categories = ['All', ...Array.from(new Set(recipes.map(recipe => recipe.category)))];
   const difficulties = ['All', 'Easy', 'Medium', 'Hard'];
@@ -57,8 +65,8 @@ export const RecipeSearch: React.FC<RecipeSearchProps> = ({ onNavigate, onSelect
       if (selectedDietType !== 'All') {
         const isVegetarian = recipe.tags.some(tag => 
           tag.toLowerCase().includes('vegetarian') || tag.toLowerCase().includes('vegan')
-        );
-        const isVegan = recipe.tags.some(tag => tag.toLowerCase().includes('vegan'));
+        ) || (recipe.dietaryRestrictions?.vegetarian);
+        const isVegan = recipe.tags.some(tag => tag.toLowerCase().includes('vegan')) || (recipe.dietaryRestrictions?.vegan);
         
         if (selectedDietType === 'Vegetarian') {
           matchesDietType = isVegetarian;
@@ -69,9 +77,15 @@ export const RecipeSearch: React.FC<RecipeSearchProps> = ({ onNavigate, onSelect
         }
       }
 
-      return matchesCategory && matchesDifficulty && matchesCookTime && matchesDietType;
+      // Dietary restrictions filtering
+      const matchesDietaryRestrictions = Object.entries(dietaryRestrictions).every(([key, required]) => {
+        if (!required) return true;
+        return recipe.dietaryRestrictions?.[key as keyof typeof recipe.dietaryRestrictions] === true;
+      });
+
+      return matchesCategory && matchesDifficulty && matchesCookTime && matchesDietType && matchesDietaryRestrictions;
     });
-  }, [recipes, selectedCategory, selectedDifficulty, selectedDietType, maxCookTime]);
+  }, [recipes, selectedCategory, selectedDifficulty, selectedDietType, maxCookTime, dietaryRestrictions]);
 
   return (
     <div className="p-6 max-w-7xl mx-auto bg-gray-900 min-h-screen">
@@ -144,70 +158,110 @@ export const RecipeSearch: React.FC<RecipeSearchProps> = ({ onNavigate, onSelect
 
           {/* Filters */}
           {showFilters && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mt-6 pt-6 border-t border-gray-700">
+            <div className="mt-6 pt-6 border-t border-gray-700 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Category</label>
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="w-full p-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  >
+                    {categories.map(category => (
+                      <option key={category} value={category}>{category}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Diet Type</label>
+                  <select
+                    value={selectedDietType}
+                    onChange={(e) => setSelectedDietType(e.target.value)}
+                    className="w-full p-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  >
+                    {dietTypes.map(dietType => (
+                      <option key={dietType} value={dietType}>{dietType}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Difficulty</label>
+                  <select
+                    value={selectedDifficulty}
+                    onChange={(e) => setSelectedDifficulty(e.target.value)}
+                    className="w-full p-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  >
+                    {difficulties.map(difficulty => (
+                      <option key={difficulty} value={difficulty}>{difficulty}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Max Cook Time: {maxCookTime}min
+                  </label>
+                  <input
+                    type="range"
+                    min="10"
+                    max="120"
+                    step="5"
+                    value={maxCookTime}
+                    onChange={(e) => setMaxCookTime(Number(e.target.value))}
+                    className="w-full"
+                  />
+                </div>
+                <div className="flex items-end">
+                  <button
+                    onClick={() => {
+                      setSearchTerm('');
+                      setSelectedCategory('All');
+                      setSelectedDietType('All');
+                      setSelectedDifficulty('All');
+                      setMaxCookTime(60);
+                      setDietaryRestrictions({
+                        glutenFree: false,
+                        dairyFree: false,
+                        nutFree: false,
+                        peanutFree: false,
+                        keto: false,
+                        lowCarb: false
+                      });
+                    }}
+                    className="w-full px-4 py-2 text-sm text-gray-400 hover:text-gray-200 hover:bg-gray-700 rounded-lg transition-colors"
+                  >
+                    Clear Filters
+                  </button>
+                </div>
+              </div>
+
+              {/* Dietary Restrictions */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Category</label>
-                <select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full p-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                >
-                  {categories.map(category => (
-                    <option key={category} value={category}>{category}</option>
+                <label className="block text-sm font-medium text-gray-300 mb-3">Dietary Restrictions</label>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                  {[
+                    { key: 'glutenFree', label: '🌾 Gluten-Free', color: 'bg-amber-600' },
+                    { key: 'dairyFree', label: '🥛 Dairy-Free', color: 'bg-blue-600' },
+                    { key: 'nutFree', label: '🥜 Nut-Free', color: 'bg-orange-600' },
+                    { key: 'peanutFree', label: '🥜 Peanut-Free', color: 'bg-red-600' },
+                    { key: 'keto', label: '🥑 Keto', color: 'bg-purple-600' },
+                    { key: 'lowCarb', label: '🥬 Low-Carb', color: 'bg-green-600' }
+                  ].map(({ key, label, color }) => (
+                    <button
+                      key={key}
+                      onClick={() => setDietaryRestrictions(prev => ({
+                        ...prev,
+                        [key]: !prev[key as keyof typeof prev]
+                      }))}
+                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        dietaryRestrictions[key as keyof typeof dietaryRestrictions]
+                          ? `${color} text-white`
+                          : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                      }`}
+                    >
+                      {label}
+                    </button>
                   ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Diet Type</label>
-                <select
-                  value={selectedDietType}
-                  onChange={(e) => setSelectedDietType(e.target.value)}
-                  className="w-full p-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                >
-                  {dietTypes.map(dietType => (
-                    <option key={dietType} value={dietType}>{dietType}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Difficulty</label>
-                <select
-                  value={selectedDifficulty}
-                  onChange={(e) => setSelectedDifficulty(e.target.value)}
-                  className="w-full p-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                >
-                  {difficulties.map(difficulty => (
-                    <option key={difficulty} value={difficulty}>{difficulty}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Max Cook Time: {maxCookTime}min
-                </label>
-                <input
-                  type="range"
-                  min="10"
-                  max="120"
-                  step="5"
-                  value={maxCookTime}
-                  onChange={(e) => setMaxCookTime(Number(e.target.value))}
-                  className="w-full"
-                />
-              </div>
-              <div className="flex items-end">
-                <button
-                  onClick={() => {
-                    setSearchTerm('');
-                    setSelectedCategory('All');
-                    setSelectedDietType('All');
-                    setSelectedDifficulty('All');
-                    setMaxCookTime(60);
-                  }}
-                  className="w-full px-4 py-2 text-sm text-gray-400 hover:text-gray-200 hover:bg-gray-700 rounded-lg transition-colors"
-                >
-                  Clear Filters
-                </button>
+                </div>
               </div>
             </div>
           )}

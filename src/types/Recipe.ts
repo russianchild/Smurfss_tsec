@@ -12,6 +12,16 @@ export interface Recipe {
   instructions: string[];
   nutrition: NutritionInfo;
   tags: string[];
+  dietaryRestrictions?: {
+    glutenFree: boolean;
+    dairyFree: boolean;
+    nutFree: boolean;
+    peanutFree: boolean;
+    keto: boolean;
+    lowCarb: boolean;
+    vegetarian: boolean;
+    vegan: boolean;
+  };
 }
 
 export interface Ingredient {

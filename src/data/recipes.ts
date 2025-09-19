@@ -1,6 +1,7 @@
 import { Recipe } from '../types/Recipe';
+import { addDietaryRestrictionsToRecipes } from '../utils/addDietaryRestrictions';
 
-export const recipes: Recipe[] = [
+const rawRecipes: Recipe[] = [
   {
     id: '1',
     name: 'Mediterranean Quinoa Bowl',
@@ -56,7 +57,17 @@ export const recipes: Recipe[] = [
         zinc: 2
       }
     },
-    tags: ['vegetarian', 'gluten-free', 'mediterranean', 'healthy']
+    tags: ['vegetarian', 'gluten-free', 'mediterranean', 'healthy'],
+    dietaryRestrictions: {
+      glutenFree: true,
+      dairyFree: false,
+      nutFree: true,
+      peanutFree: true,
+      keto: false,
+      lowCarb: false,
+      vegetarian: true,
+      vegan: false
+    }
   },
   {
     id: '2',
@@ -112,7 +123,17 @@ export const recipes: Recipe[] = [
         zinc: 4
       }
     },
-    tags: ['mexican', 'beef', 'comfort-food', 'family-friendly']
+    tags: ['mexican', 'beef', 'comfort-food', 'family-friendly'],
+    dietaryRestrictions: {
+      glutenFree: false, // Contains taco shells (wheat)
+      dairyFree: false, // Contains cheese and sour cream
+      nutFree: true,
+      peanutFree: true,
+      keto: false, // Contains taco shells (high carb)
+      lowCarb: false,
+      vegetarian: false, // Contains beef
+      vegan: false
+    }
   },
   {
     id: '3',
@@ -171,7 +192,17 @@ export const recipes: Recipe[] = [
         zinc: 2
       }
     },
-    tags: ['vegetarian', 'italian', 'comfort-food', 'gourmet']
+    tags: ['vegetarian', 'italian', 'comfort-food', 'gourmet'],
+    dietaryRestrictions: {
+      glutenFree: true, // Rice-based
+      dairyFree: false, // Contains Parmesan and butter
+      nutFree: true,
+      peanutFree: true,
+      keto: false, // Rice is high carb
+      lowCarb: false,
+      vegetarian: true,
+      vegan: false // Contains dairy
+    }
   },
   {
     id: '4',
@@ -230,7 +261,17 @@ export const recipes: Recipe[] = [
         zinc: 2
       }
     },
-    tags: ['thai', 'spicy', 'coconut', 'gluten-free']
+    tags: ['thai', 'spicy', 'coconut', 'gluten-free'],
+    dietaryRestrictions: {
+      glutenFree: true, // No wheat ingredients
+      dairyFree: true, // Coconut milk instead of dairy
+      nutFree: true,
+      peanutFree: true,
+      keto: true, // Low carb, high fat from coconut milk
+      lowCarb: true,
+      vegetarian: false, // Contains chicken
+      vegan: false // Contains fish sauce and chicken
+    }
   },
   {
     id: '5',
@@ -851,7 +892,7 @@ export const recipes: Recipe[] = [
   }];
 
 // Additional recipes batch 2
-export const additionalRecipes: Recipe[] = [
+const rawAdditionalRecipes: Recipe[] = [
   {
     id: '70',
     name: 'Turkey Sandwich',
@@ -999,8 +1040,10 @@ export const additionalRecipes: Recipe[] = [
   }
 ];
 
+export const recipes = addDietaryRestrictionsToRecipes(rawRecipes);
+
 // Additional recipes batch 3
-export const moreRecipes: Recipe[] = [
+const rawMoreRecipes: Recipe[] = [
   {
     id: '75',
     name: 'Chicken Fajitas',
@@ -1147,3 +1190,5 @@ export const moreRecipes: Recipe[] = [
     tags: ['american', 'sandwich', 'cheese', 'comfort-food']
   }
 ];
+
+export const additionalRecipes = addDietaryRestrictionsToRecipes(rawAdditionalRecipes);
