@@ -42,14 +42,7 @@ export const NutritionalAnalysis: React.FC<NutritionalAnalysisProps> = ({ onNavi
     }
   };
 
-  const getMacroGradient = (macro: string): string => {
-    switch (macro) {
-      case 'protein': return 'from-blue-500 to-blue-600';
-      case 'carbs': return 'from-orange-500 to-orange-600';
-      case 'fat': return 'from-purple-500 to-purple-600';
-      default: return 'from-gray-500 to-gray-600';
-    }
-  };
+  // Removed unused getMacroGradient function
 
   const totalMacros = selectedRecipe ? 
     (selectedRecipe.nutrition.protein + selectedRecipe.nutrition.carbs + selectedRecipe.nutrition.fat) * servingSize : 0;

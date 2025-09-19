@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Search, Filter, Clock, Users, ChefHat, ArrowLeft, RefreshCw, Loader } from 'lucide-react';
 import { Recipe } from '../types/Recipe';
 import { useRecipes } from '../hooks/useRecipes';
@@ -93,7 +93,7 @@ export const RecipeSearch: React.FC<RecipeSearchProps> = ({ onNavigate, onSelect
           <button
             onClick={async () => {
               console.log('Testing API...');
-              const testResult = await (window as any).recipeApi?.testApi();
+              const testResult = await (window as Record<string, unknown>).recipeApi?.testApi();
               console.log('API test result:', testResult);
               alert(`API Test: ${testResult ? 'Success' : 'Failed'}`);
             }}

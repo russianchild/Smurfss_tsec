@@ -1,7 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Recipe } from '../types/Recipe';
 import { recipeApi } from '../services/recipeApi';
 import { recipes as fallbackRecipes } from '../data/recipes';
+import { additionalRecipes, moreRecipes } from '../data/additionalRecipes';
+import { 
+  hundredMoreRecipes, 
+  hundredMoreRecipes2, 
+  hundredMoreRecipes3, 
+  hundredMoreRecipes4, 
+  hundredMoreRecipes5, 
+  hundredMoreRecipes6, 
+  hundredMoreRecipes7, 
+  hundredMoreRecipes8 
+} from '../data/hundredMoreRecipes';
 
 interface UseRecipesReturn {
   recipes: Recipe[];
@@ -14,7 +25,21 @@ interface UseRecipesReturn {
 }
 
 export const useRecipes = (): UseRecipesReturn => {
-  const [recipes, setRecipes] = useState<Recipe[]>(fallbackRecipes);
+  // Combine all local recipes
+  const allLocalRecipes = [
+    ...fallbackRecipes, 
+    ...additionalRecipes, 
+    ...moreRecipes,
+    ...hundredMoreRecipes,
+    ...hundredMoreRecipes2,
+    ...hundredMoreRecipes3,
+    ...hundredMoreRecipes4,
+    ...hundredMoreRecipes5,
+    ...hundredMoreRecipes6,
+    ...hundredMoreRecipes7,
+    ...hundredMoreRecipes8
+  ];
+  const [recipes, setRecipes] = useState<Recipe[]>(allLocalRecipes);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,7 +54,7 @@ export const useRecipes = (): UseRecipesReturn => {
     console.log('Loading recipes...');
     
     // Always start with local recipes so user sees content immediately
-    setRecipes(fallbackRecipes);
+    setRecipes(allLocalRecipes);
     
     try {
       // Try to get API recipes to supplement local ones
@@ -40,7 +65,7 @@ export const useRecipes = (): UseRecipesReturn => {
       if (apiRecipes.length > 0) {
         console.log('Adding API recipes to local recipes');
         // Remove duplicates and combine
-        const combinedRecipes = [...fallbackRecipes, ...apiRecipes];
+        const combinedRecipes = [...allLocalRecipes, ...apiRecipes];
         const uniqueRecipes = combinedRecipes.filter((recipe, index, self) => 
           index === self.findIndex(r => r.id === recipe.id)
         );
@@ -58,7 +83,7 @@ export const useRecipes = (): UseRecipesReturn => {
     }
   };
 
-  const searchRecipes = async (query: string) => {
+  const searchRecipes = useCallback(async (query: string) => {
     if (!query.trim()) {
       await loadRandomRecipes(); // Load all recipes when search is cleared
       return;
@@ -69,16 +94,16 @@ export const useRecipes = (): UseRecipesReturn => {
     try {
       // Fetch maximum search results
       const apiRecipes = await recipeApi.searchRecipes(query, 100);
-      const filteredFallback = fallbackRecipes.filter(recipe =>
+      const filteredFallback = allLocalRecipes.filter(recipe =>
         recipe.name.toLowerCase().includes(query.toLowerCase()) ||
         recipe.description.toLowerCase().includes(query.toLowerCase()) ||
         recipe.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase()))
       );
       setRecipes([...filteredFallback, ...apiRecipes]);
-    } catch (err) {
+    } catch {
       setError('Failed to search recipes');
       // Fallback to local search
-      const filteredFallback = fallbackRecipes.filter(recipe =>
+      const filteredFallback = allLocalRecipes.filter(recipe =>
         recipe.name.toLowerCase().includes(query.toLowerCase()) ||
         recipe.description.toLowerCase().includes(query.toLowerCase()) ||
         recipe.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase()))
@@ -87,23 +112,23 @@ export const useRecipes = (): UseRecipesReturn => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [allLocalRecipes]);
 
-  const getRecipesByCategory = async (category: string) => {
+  const getRecipesByCategory = useCallback(async (category: string) => {
     setLoading(true);
     setError(null);
     try {
       // Fetch maximum recipes for category
       const apiRecipes = await recipeApi.getRecipesByCategory(category, 100);
-      const filteredFallback = fallbackRecipes.filter(recipe =>
+      const filteredFallback = allLocalRecipes.filter(recipe =>
         recipe.category.toLowerCase() === category.toLowerCase() ||
         recipe.tags.some(tag => tag.toLowerCase() === category.toLowerCase())
       );
       setRecipes([...filteredFallback, ...apiRecipes]);
-    } catch (err) {
+    } catch {
       setError('Failed to load recipes by category');
       // Fallback to local filtering
-      const filteredFallback = fallbackRecipes.filter(recipe =>
+      const filteredFallback = allLocalRecipes.filter(recipe =>
         recipe.category.toLowerCase() === category.toLowerCase() ||
         recipe.tags.some(tag => tag.toLowerCase() === category.toLowerCase())
       );
@@ -111,9 +136,9 @@ export const useRecipes = (): UseRecipesReturn => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [allLocalRecipes]);
 
-  const getRecipesByDiet = async (dietType: string) => {
+  const getRecipesByDiet = useCallback(async (dietType: string) => {
     setLoading(true);
     setError(null);
     try {
@@ -127,7 +152,7 @@ export const useRecipes = (): UseRecipesReturn => {
         apiRecipes = await recipeApi.getNonVegetarianRecipes(100);
       }
       
-      const filteredFallback = fallbackRecipes.filter(recipe => {
+      const filteredFallback = allLocalRecipes.filter(recipe => {
         if (dietType === 'Vegetarian') {
           return recipe.tags.some(tag => tag.toLowerCase().includes('vegetarian'));
         } else if (dietType === 'Vegan') {
@@ -141,10 +166,10 @@ export const useRecipes = (): UseRecipesReturn => {
       });
       
       setRecipes([...filteredFallback, ...apiRecipes]);
-    } catch (err) {
+    } catch {
       setError(`Failed to load ${dietType.toLowerCase()} recipes`);
       // Fallback to local filtering
-      const filteredFallback = fallbackRecipes.filter(recipe => {
+      const filteredFallback = allLocalRecipes.filter(recipe => {
         if (dietType === 'Vegetarian') {
           return recipe.tags.some(tag => tag.toLowerCase().includes('vegetarian'));
         } else if (dietType === 'Vegan') {
@@ -160,11 +185,11 @@ export const useRecipes = (): UseRecipesReturn => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [allLocalRecipes]);
 
-  const refreshRecipes = async () => {
+  const refreshRecipes = useCallback(async () => {
     await loadRandomRecipes();
-  };
+  }, []);
 
   return {
     recipes,

@@ -703,4 +703,447 @@ export const recipes: Recipe[] = [
     },
     tags: ['french', 'soup', 'comfort-food', 'cheese']
   }
+  ,
+  {
+    id: '65',
+    name: 'Chicken Caesar Wrap',
+    description: 'Grilled chicken Caesar salad wrapped in a tortilla',
+    image: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=400',
+    category: 'American',
+    difficulty: 'Easy',
+    prepTime: 15,
+    cookTime: 10,
+    servings: 4,
+    ingredients: [
+      { id: '304', name: 'Chicken breast', amount: 1, unit: 'lb', category: 'Meat' },
+      { id: '305', name: 'Flour tortillas', amount: 4, unit: 'large', category: 'Grains' },
+      { id: '306', name: 'Romaine lettuce', amount: 4, unit: 'cups', category: 'Vegetables' },
+      { id: '307', name: 'Caesar dressing', amount: 0.5, unit: 'cup', category: 'Condiments' }
+    ],
+    instructions: [
+      'Grill chicken until cooked through',
+      'Slice chicken into strips',
+      'Toss lettuce with Caesar dressing',
+      'Wrap chicken and salad in tortillas'
+    ],
+    nutrition: {
+      calories: 385, protein: 28, carbs: 32, fat: 16, fiber: 3, sugar: 3, sodium: 785, cholesterol: 75,
+      vitamins: { vitaminA: 85, vitaminC: 15, vitaminD: 5, vitaminE: 4, vitaminK: 95, vitaminB6: 0.8, vitaminB12: 0.3, folate: 45 },
+      minerals: { calcium: 185, iron: 3, magnesium: 45, potassium: 485, zinc: 2 }
+    },
+    tags: ['american', 'wrap', 'chicken', 'quick']
+  },
+  {
+    id: '66',
+    name: 'Beef Chili',
+    description: 'Hearty ground beef chili with beans and spices',
+    image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
+    category: 'American',
+    difficulty: 'Medium',
+    prepTime: 15,
+    cookTime: 60,
+    servings: 8,
+    ingredients: [
+      { id: '308', name: 'Ground beef', amount: 2, unit: 'lbs', category: 'Meat' },
+      { id: '309', name: 'Kidney beans', amount: 2, unit: 'cans', category: 'Legumes' },
+      { id: '310', name: 'Diced tomatoes', amount: 2, unit: 'cans', category: 'Vegetables' },
+      { id: '311', name: 'Chili powder', amount: 3, unit: 'tbsp', category: 'Spices' }
+    ],
+    instructions: [
+      'Brown ground beef in large pot',
+      'Add onions and cook until soft',
+      'Add spices, tomatoes, and beans',
+      'Simmer for 1 hour, stirring occasionally'
+    ],
+    nutrition: {
+      calories: 385, protein: 28, carbs: 25, fat: 18, fiber: 8, sugar: 8, sodium: 785, cholesterol: 75,
+      vitamins: { vitaminA: 45, vitaminC: 25, vitaminD: 0, vitaminE: 2, vitaminK: 8, vitaminB6: 0.4, vitaminB12: 2.2, folate: 85 },
+      minerals: { calcium: 85, iron: 4, magnesium: 85, potassium: 785, zinc: 5 }
+    },
+    tags: ['american', 'chili', 'beef', 'spicy', 'comfort-food']
+  },
+  {
+    id: '67',
+    name: 'Vegetable Lasagna',
+    description: 'Layered pasta with vegetables and cheese',
+    image: 'https://images.unsplash.com/photo-1574894709920-11b28e7367e3?w=400',
+    category: 'Italian',
+    difficulty: 'Hard',
+    prepTime: 45,
+    cookTime: 60,
+    servings: 8,
+    ingredients: [
+      { id: '312', name: 'Lasagna noodles', amount: 12, unit: 'sheets', category: 'Grains' },
+      { id: '313', name: 'Ricotta cheese', amount: 2, unit: 'cups', category: 'Dairy' },
+      { id: '314', name: 'Mixed vegetables', amount: 4, unit: 'cups', category: 'Vegetables' },
+      { id: '315', name: 'Mozzarella cheese', amount: 2, unit: 'cups', category: 'Dairy' }
+    ],
+    instructions: [
+      'Cook lasagna noodles until al dente',
+      'Sauté mixed vegetables until tender',
+      'Layer noodles, ricotta, vegetables, and mozzarella',
+      'Bake at 375°F for 45 minutes'
+    ],
+    nutrition: {
+      calories: 385, protein: 18, carbs: 42, fat: 16, fiber: 4, sugar: 8, sodium: 685, cholesterol: 45,
+      vitamins: { vitaminA: 85, vitaminC: 25, vitaminD: 5, vitaminE: 4, vitaminK: 25, vitaminB6: 0.3, vitaminB12: 0.8, folate: 85 },
+      minerals: { calcium: 385, iron: 3, magnesium: 45, potassium: 485, zinc: 2 }
+    },
+    tags: ['italian', 'vegetarian', 'lasagna', 'casserole']
+  },
+  {
+    id: '68',
+    name: 'Chicken Quesadilla',
+    description: 'Grilled tortilla filled with chicken and cheese',
+    image: 'https://images.unsplash.com/photo-1565299585323-38174c4a6471?w=400',
+    category: 'Mexican',
+    difficulty: 'Easy',
+    prepTime: 10,
+    cookTime: 15,
+    servings: 4,
+    ingredients: [
+      { id: '316', name: 'Chicken breast', amount: 1, unit: 'lb', category: 'Meat' },
+      { id: '317', name: 'Flour tortillas', amount: 4, unit: 'large', category: 'Grains' },
+      { id: '318', name: 'Cheddar cheese', amount: 2, unit: 'cups', category: 'Dairy' },
+      { id: '319', name: 'Bell peppers', amount: 1, unit: 'medium', category: 'Vegetables' }
+    ],
+    instructions: [
+      'Cook and dice chicken breast',
+      'Sauté bell peppers until soft',
+      'Fill tortillas with chicken, peppers, and cheese',
+      'Cook in skillet until cheese melts'
+    ],
+    nutrition: {
+      calories: 485, protein: 32, carbs: 28, fat: 26, fiber: 2, sugar: 4, sodium: 885, cholesterol: 95,
+      vitamins: { vitaminA: 45, vitaminC: 85, vitaminD: 5, vitaminE: 4, vitaminK: 8, vitaminB6: 0.8, vitaminB12: 0.8, folate: 25 },
+      minerals: { calcium: 485, iron: 2, magnesium: 45, potassium: 485, zinc: 3 }
+    },
+    tags: ['mexican', 'quesadilla', 'chicken', 'cheese']
+  },
+  {
+    id: '69',
+    name: 'Mushroom Soup',
+    description: 'Creamy mushroom soup with herbs',
+    image: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400',
+    category: 'American',
+    difficulty: 'Medium',
+    prepTime: 15,
+    cookTime: 30,
+    servings: 6,
+    ingredients: [
+      { id: '320', name: 'Mixed mushrooms', amount: 2, unit: 'lbs', category: 'Vegetables' },
+      { id: '321', name: 'Heavy cream', amount: 1, unit: 'cup', category: 'Dairy' },
+      { id: '322', name: 'Vegetable broth', amount: 4, unit: 'cups', category: 'Broth' },
+      { id: '323', name: 'Fresh thyme', amount: 2, unit: 'tbsp', category: 'Herbs' }
+    ],
+    instructions: [
+      'Sauté mushrooms until golden',
+      'Add broth and simmer 20 minutes',
+      'Blend until smooth',
+      'Stir in cream and thyme'
+    ],
+    nutrition: {
+      calories: 185, protein: 6, carbs: 12, fat: 14, fiber: 3, sugar: 6, sodium: 585, cholesterol: 35,
+      vitamins: { vitaminA: 15, vitaminC: 4, vitaminD: 15, vitaminE: 2, vitaminK: 8, vitaminB6: 0.2, vitaminB12: 0.3, folate: 25 },
+      minerals: { calcium: 85, iron: 2, magnesium: 25, potassium: 485, zinc: 1 }
+    },
+    tags: ['american', 'soup', 'vegetarian', 'creamy']
+  }];
+
+// Additional recipes batch 2
+export const additionalRecipes: Recipe[] = [
+  {
+    id: '70',
+    name: 'Turkey Sandwich',
+    description: 'Classic deli turkey sandwich with fresh vegetables',
+    image: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=400',
+    category: 'American',
+    difficulty: 'Easy',
+    prepTime: 10,
+    cookTime: 0,
+    servings: 2,
+    ingredients: [
+      { id: '324', name: 'Sliced turkey', amount: 0.5, unit: 'lb', category: 'Meat' },
+      { id: '325', name: 'Bread slices', amount: 4, unit: 'pieces', category: 'Grains' },
+      { id: '326', name: 'Lettuce', amount: 4, unit: 'leaves', category: 'Vegetables' },
+      { id: '327', name: 'Tomato', amount: 1, unit: 'medium', category: 'Vegetables' }
+    ],
+    instructions: [
+      'Toast bread if desired',
+      'Layer turkey on bread',
+      'Add lettuce and tomato slices',
+      'Top with second slice of bread'
+    ],
+    nutrition: {
+      calories: 285, protein: 22, carbs: 28, fat: 8, fiber: 3, sugar: 4, sodium: 885, cholesterol: 45,
+      vitamins: { vitaminA: 25, vitaminC: 15, vitaminD: 0, vitaminE: 2, vitaminK: 25, vitaminB6: 0.4, vitaminB12: 0.8, folate: 45 },
+      minerals: { calcium: 85, iron: 3, magnesium: 25, potassium: 385, zinc: 2 }
+    },
+    tags: ['american', 'sandwich', 'turkey', 'no-cook', 'quick']
+  },
+  {
+    id: '71',
+    name: 'Beef Stew',
+    description: 'Hearty beef stew with potatoes and carrots',
+    image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
+    category: 'American',
+    difficulty: 'Medium',
+    prepTime: 20,
+    cookTime: 120,
+    servings: 6,
+    ingredients: [
+      { id: '328', name: 'Beef chuck', amount: 2, unit: 'lbs', category: 'Meat' },
+      { id: '329', name: 'Potatoes', amount: 4, unit: 'large', category: 'Vegetables' },
+      { id: '330', name: 'Carrots', amount: 4, unit: 'large', category: 'Vegetables' },
+      { id: '331', name: 'Beef broth', amount: 4, unit: 'cups', category: 'Broth' }
+    ],
+    instructions: [
+      'Brown beef cubes in Dutch oven',
+      'Add broth and bring to boil',
+      'Simmer covered for 1.5 hours',
+      'Add vegetables and cook 30 minutes more'
+    ],
+    nutrition: {
+      calories: 385, protein: 32, carbs: 25, fat: 18, fiber: 4, sugar: 6, sodium: 685, cholesterol: 95,
+      vitamins: { vitaminA: 185, vitaminC: 15, vitaminD: 0, vitaminE: 2, vitaminK: 8, vitaminB6: 0.6, vitaminB12: 2.8, folate: 25 },
+      minerals: { calcium: 45, iron: 4, magnesium: 45, potassium: 785, zinc: 6 }
+    },
+    tags: ['american', 'stew', 'beef', 'comfort-food']
+  },
+  {
+    id: '72',
+    name: 'Chicken Salad',
+    description: 'Classic chicken salad with celery and mayo',
+    image: 'https://images.unsplash.com/photo-2097090/pexels-photo-2097090.jpeg?w=400',
+    category: 'American',
+    difficulty: 'Easy',
+    prepTime: 15,
+    cookTime: 20,
+    servings: 4,
+    ingredients: [
+      { id: '332', name: 'Chicken breast', amount: 2, unit: 'lbs', category: 'Meat' },
+      { id: '333', name: 'Celery', amount: 2, unit: 'stalks', category: 'Vegetables' },
+      { id: '334', name: 'Mayonnaise', amount: 0.5, unit: 'cup', category: 'Condiments' },
+      { id: '335', name: 'Grapes', amount: 1, unit: 'cup', category: 'Fruits' }
+    ],
+    instructions: [
+      'Poach chicken until cooked through',
+      'Cool and dice chicken',
+      'Mix with diced celery and grapes',
+      'Bind with mayonnaise and season'
+    ],
+    nutrition: {
+      calories: 385, protein: 28, carbs: 12, fat: 26, fiber: 1, sugar: 10, sodium: 485, cholesterol: 85,
+      vitamins: { vitaminA: 15, vitaminC: 8, vitaminD: 5, vitaminE: 8, vitaminK: 15, vitaminB6: 0.8, vitaminB12: 0.3, folate: 15 },
+      minerals: { calcium: 45, iron: 1, magnesium: 35, potassium: 485, zinc: 2 }
+    },
+    tags: ['american', 'salad', 'chicken', 'no-cook']
+  },
+  {
+    id: '73',
+    name: 'Pork Tenderloin',
+    description: 'Roasted pork tenderloin with herbs',
+    image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400',
+    category: 'American',
+    difficulty: 'Medium',
+    prepTime: 15,
+    cookTime: 25,
+    servings: 4,
+    ingredients: [
+      { id: '336', name: 'Pork tenderloin', amount: 2, unit: 'lbs', category: 'Meat' },
+      { id: '337', name: 'Rosemary', amount: 2, unit: 'tbsp', category: 'Herbs' },
+      { id: '338', name: 'Garlic', amount: 4, unit: 'cloves', category: 'Vegetables' },
+      { id: '339', name: 'Olive oil', amount: 2, unit: 'tbsp', category: 'Oils' }
+    ],
+    instructions: [
+      'Preheat oven to 425°F',
+      'Rub pork with oil, garlic, and rosemary',
+      'Sear in oven-safe skillet',
+      'Roast 15-20 minutes until 145°F internal temp'
+    ],
+    nutrition: {
+      calories: 285, protein: 32, carbs: 2, fat: 16, fiber: 0, sugar: 0, sodium: 285, cholesterol: 95,
+      vitamins: { vitaminA: 2, vitaminC: 2, vitaminD: 15, vitaminE: 2, vitaminK: 2, vitaminB6: 0.8, vitaminB12: 0.8, folate: 5 },
+      minerals: { calcium: 25, iron: 2, magnesium: 35, potassium: 485, zinc: 3 }
+    },
+    tags: ['american', 'pork', 'roasted', 'high-protein']
+  },
+  {
+    id: '74',
+    name: 'Vegetable Stir Fry',
+    description: 'Quick and healthy mixed vegetable stir fry',
+    image: 'https://images.unsplash.com/photo-1640774/pexels-photo-1640774.jpeg?w=400',
+    category: 'Asian',
+    difficulty: 'Easy',
+    prepTime: 15,
+    cookTime: 10,
+    servings: 4,
+    ingredients: [
+      { id: '340', name: 'Mixed vegetables', amount: 6, unit: 'cups', category: 'Vegetables' },
+      { id: '341', name: 'Soy sauce', amount: 3, unit: 'tbsp', category: 'Condiments' },
+      { id: '342', name: 'Sesame oil', amount: 1, unit: 'tbsp', category: 'Oils' },
+      { id: '343', name: 'Ginger', amount: 1, unit: 'tbsp', category: 'Spices' }
+    ],
+    instructions: [
+      'Heat oil in large wok or skillet',
+      'Add ginger and cook 30 seconds',
+      'Add vegetables and stir-fry 5-7 minutes',
+      'Add soy sauce and sesame oil'
+    ],
+    nutrition: {
+      calories: 95, protein: 4, carbs: 15, fat: 4, fiber: 5, sugar: 8, sodium: 485, cholesterol: 0,
+      vitamins: { vitaminA: 125, vitaminC: 95, vitaminD: 0, vitaminE: 8, vitaminK: 85, vitaminB6: 0.15, vitaminB12: 0, folate: 35 },
+      minerals: { calcium: 65, iron: 2, magnesium: 35, potassium: 485, zinc: 1 }
+    },
+    tags: ['asian', 'vegetarian', 'vegan', 'stir-fry', 'healthy']
+  }
+];
+
+// Additional recipes batch 3
+export const moreRecipes: Recipe[] = [
+  {
+    id: '75',
+    name: 'Chicken Fajitas',
+    description: 'Sizzling chicken fajitas with peppers and onions',
+    image: 'https://images.unsplash.com/photo-1565299585323-38174c4a6471?w=400',
+    category: 'Mexican',
+    difficulty: 'Medium',
+    prepTime: 20,
+    cookTime: 15,
+    servings: 4,
+    ingredients: [
+      { id: '344', name: 'Chicken breast', amount: 2, unit: 'lbs', category: 'Meat' },
+      { id: '345', name: 'Bell peppers', amount: 3, unit: 'medium', category: 'Vegetables' },
+      { id: '346', name: 'Onions', amount: 2, unit: 'large', category: 'Vegetables' },
+      { id: '347', name: 'Flour tortillas', amount: 8, unit: 'pieces', category: 'Grains' }
+    ],
+    instructions: [
+      'Slice chicken into strips',
+      'Marinate chicken in fajita seasoning',
+      'Sauté chicken until cooked through',
+      'Add peppers and onions, cook until tender'
+    ],
+    nutrition: {
+      calories: 385, protein: 32, carbs: 35, fat: 12, fiber: 4, sugar: 8, sodium: 685, cholesterol: 85,
+      vitamins: { vitaminA: 45, vitaminC: 125, vitaminD: 5, vitaminE: 4, vitaminK: 8, vitaminB6: 0.8, vitaminB12: 0.3, folate: 45 },
+      minerals: { calcium: 85, iron: 3, magnesium: 45, potassium: 585, zinc: 2 }
+    },
+    tags: ['mexican', 'chicken', 'fajitas', 'peppers']
+  },
+  {
+    id: '76',
+    name: 'Tuna Salad',
+    description: 'Classic tuna salad with celery and mayo',
+    image: 'https://images.unsplash.com/photo-2097090/pexels-photo-2097090.jpeg?w=400',
+    category: 'American',
+    difficulty: 'Easy',
+    prepTime: 10,
+    cookTime: 0,
+    servings: 4,
+    ingredients: [
+      { id: '348', name: 'Canned tuna', amount: 2, unit: 'cans', category: 'Seafood' },
+      { id: '349', name: 'Celery', amount: 2, unit: 'stalks', category: 'Vegetables' },
+      { id: '350', name: 'Mayonnaise', amount: 0.25, unit: 'cup', category: 'Condiments' },
+      { id: '351', name: 'Red onion', amount: 0.25, unit: 'cup', category: 'Vegetables' }
+    ],
+    instructions: [
+      'Drain tuna and flake with fork',
+      'Dice celery and red onion',
+      'Mix tuna with vegetables',
+      'Bind with mayonnaise and season'
+    ],
+    nutrition: {
+      calories: 185, protein: 22, carbs: 3, fat: 8, fiber: 1, sugar: 2, sodium: 485, cholesterol: 35,
+      vitamins: { vitaminA: 15, vitaminC: 5, vitaminD: 85, vitaminE: 4, vitaminK: 8, vitaminB6: 0.4, vitaminB12: 2.2, folate: 15 },
+      minerals: { calcium: 25, iron: 1, magnesium: 25, potassium: 285, zinc: 1 }
+    },
+    tags: ['american', 'salad', 'seafood', 'no-cook', 'high-protein']
+  },
+  {
+    id: '77',
+    name: 'Baked Potato',
+    description: 'Fluffy baked potato with butter and chives',
+    image: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=400',
+    category: 'American',
+    difficulty: 'Easy',
+    prepTime: 5,
+    cookTime: 60,
+    servings: 4,
+    ingredients: [
+      { id: '352', name: 'Russet potatoes', amount: 4, unit: 'large', category: 'Vegetables' },
+      { id: '353', name: 'Butter', amount: 4, unit: 'tbsp', category: 'Dairy' },
+      { id: '354', name: 'Chives', amount: 2, unit: 'tbsp', category: 'Herbs' },
+      { id: '355', name: 'Sour cream', amount: 0.5, unit: 'cup', category: 'Dairy' }
+    ],
+    instructions: [
+      'Preheat oven to 425°F',
+      'Pierce potatoes with fork',
+      'Bake for 45-60 minutes until tender',
+      'Top with butter, sour cream, and chives'
+    ],
+    nutrition: {
+      calories: 285, protein: 6, carbs: 45, fat: 8, fiber: 4, sugar: 3, sodium: 185, cholesterol: 25,
+      vitamins: { vitaminA: 8, vitaminC: 25, vitaminD: 5, vitaminE: 2, vitaminK: 15, vitaminB6: 0.6, vitaminB12: 0.3, folate: 25 },
+      minerals: { calcium: 85, iron: 2, magnesium: 45, potassium: 785, zinc: 1 }
+    },
+    tags: ['american', 'potato', 'vegetarian', 'side-dish']
+  },
+  {
+    id: '78',
+    name: 'Chicken Soup',
+    description: 'Comforting homemade chicken soup',
+    image: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400',
+    category: 'American',
+    difficulty: 'Medium',
+    prepTime: 15,
+    cookTime: 45,
+    servings: 6,
+    ingredients: [
+      { id: '356', name: 'Whole chicken', amount: 1, unit: 'whole', category: 'Meat' },
+      { id: '357', name: 'Carrots', amount: 3, unit: 'medium', category: 'Vegetables' },
+      { id: '358', name: 'Celery', amount: 3, unit: 'stalks', category: 'Vegetables' },
+      { id: '359', name: 'Onion', amount: 1, unit: 'large', category: 'Vegetables' }
+    ],
+    instructions: [
+      'Simmer chicken in water with vegetables',
+      'Remove chicken and shred meat',
+      'Strain broth and return to pot',
+      'Add shredded chicken back to broth'
+    ],
+    nutrition: {
+      calories: 185, protein: 18, carbs: 8, fat: 8, fiber: 2, sugar: 4, sodium: 585, cholesterol: 55,
+      vitamins: { vitaminA: 125, vitaminC: 8, vitaminD: 5, vitaminE: 2, vitaminK: 15, vitaminB6: 0.4, vitaminB12: 0.3, folate: 25 },
+      minerals: { calcium: 45, iron: 2, magnesium: 25, potassium: 385, zinc: 2 }
+    },
+    tags: ['american', 'soup', 'chicken', 'comfort-food']
+  },
+  {
+    id: '79',
+    name: 'Grilled Cheese',
+    description: 'Classic grilled cheese sandwich',
+    image: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=400',
+    category: 'American',
+    difficulty: 'Easy',
+    prepTime: 5,
+    cookTime: 10,
+    servings: 2,
+    ingredients: [
+      { id: '360', name: 'Bread slices', amount: 4, unit: 'pieces', category: 'Grains' },
+      { id: '361', name: 'Cheddar cheese', amount: 4, unit: 'slices', category: 'Dairy' },
+      { id: '362', name: 'Butter', amount: 2, unit: 'tbsp', category: 'Dairy' },
+      { id: '363', name: 'Salt', amount: 0.25, unit: 'tsp', category: 'Spices' }
+    ],
+    instructions: [
+      'Butter one side of each bread slice',
+      'Place cheese between unbuttered sides',
+      'Cook in skillet until golden brown',
+      'Flip and cook until cheese melts'
+    ],
+    nutrition: {
+      calories: 385, protein: 16, carbs: 28, fat: 24, fiber: 2, sugar: 3, sodium: 785, cholesterol: 65,
+      vitamins: { vitaminA: 25, vitaminC: 0, vitaminD: 8, vitaminE: 2, vitaminK: 2, vitaminB6: 0.1, vitaminB12: 0.8, folate: 45 },
+      minerals: { calcium: 385, iron: 3, magnesium: 25, potassium: 185, zinc: 2 }
+    },
+    tags: ['american', 'sandwich', 'cheese', 'comfort-food']
+  }
 ];

@@ -401,8 +401,8 @@ class RecipeApiService {
   private getFallbackRecipes(): Recipe[] {
     console.log('Using fallback recipes - returning all local recipes');
     // Import and return all existing recipes as fallback
-    const { recipes } = require('../data/recipes');
-    return recipes || [];
+    import('../data/recipes').then(module => module.recipes);
+    return [];
   }
 }
 
@@ -410,7 +410,7 @@ export const recipeApi = new RecipeApiService();
 
 // Expose to window for debugging
 if (typeof window !== 'undefined') {
-  (window as any).recipeApi = recipeApi;
+  (window as Record<string, unknown>).recipeApi = recipeApi;
 }
 
 export default RecipeApiService;

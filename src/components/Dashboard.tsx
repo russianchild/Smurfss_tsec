@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Search, Calculator, BarChart3, BookOpen, Clock, Users, TrendingUp } from 'lucide-react';
 import { recipes } from '../data/recipes';
 
