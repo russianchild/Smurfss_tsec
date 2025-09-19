@@ -46,7 +46,7 @@ function App() {
     <div className="min-h-screen bg-gray-900">
       <Navigation activeSection={activeSection} onNavigate={setActiveSection} />
       
-      <main className="lg:ml-64">
+      <main className="pt-16">
         {renderActiveSection()}
       </main>
     </div>
