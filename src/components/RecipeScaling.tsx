@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Calculator, ArrowLeft, Users, Plus, Minus } from 'lucide-react';
-import { recipes } from '../data/recipes';
 import { Recipe, Ingredient } from '../types/Recipe';
+import { useRecipes } from '../hooks/useRecipes';
 
 interface RecipeScalingProps {
   onNavigate: (section: string) => void;
 }
 
 export const RecipeScaling: React.FC<RecipeScalingProps> = ({ onNavigate }) => {
+  const { recipes } = useRecipes();
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [targetServings, setTargetServings] = useState(4);
 
@@ -132,11 +133,7 @@ export const RecipeScaling: React.FC<RecipeScalingProps> = ({ onNavigate }) => {
                     </button>
                   </div>
                   
-                  <div className="text-center">
-                    <p className="text-blue-300">
-                      Scaling factor: <span className="font-semibold">{scalingFactor.toFixed(2)}x</span>
-                    </p>
-                  </div>
+
                 </div>
               </div>
 
@@ -156,11 +153,6 @@ export const RecipeScaling: React.FC<RecipeScalingProps> = ({ onNavigate }) => {
                           <div className="font-semibold text-blue-600">
                             {formatAmount(scaledIngredient.amount, scaledIngredient.unit)} {scaledIngredient.unit}
                           </div>
-                          {scalingFactor !== 1 && (
-                            <div className="text-xs text-gray-400">
-                              (was {formatAmount(ingredient.amount, ingredient.unit)} {ingredient.unit})
-                            </div>
-                          )}
                         </div>
                       </div>
                     );
